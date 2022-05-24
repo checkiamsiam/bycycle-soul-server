@@ -14,6 +14,15 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 async function run() {
   try {
+    await client.connect();
+    const reviewCollection = await client.db("Bycycle-Soul-DB").collection("reviews")
+
+    app.get('/reviews', async (req, res) => {
+      const query = await req.query;
+      const cursor = await reviewCollection.find(query)
+      const result = await cursor.toArray();
+      res.send(result);
+    })
 
   } finally {
 
