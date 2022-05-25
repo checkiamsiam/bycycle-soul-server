@@ -16,12 +16,22 @@ async function run() {
   try {
     await client.connect();
     const reviewCollection = await client.db("Bycycle-Soul-DB").collection("reviews")
+    const partsCollection = await client.db("Bycycle-Soul-DB").collection("Parts")
+
 
     app.get('/reviews', async (req, res) => {
       const query = await req.query;
       const cursor = await reviewCollection.find(query)
-      const result = await cursor.toArray();
+      const reviewData = await cursor.toArray();
+      const result = reviewData.reverse();
       res.send(result);
+    })
+
+    app.get('/parts', async (req, res) => {
+      const query = await req.query;
+      const cursor = await partsCollection.find(query)
+      const results = await cursor.toArray();
+      res.send(results);
     })
 
   } finally {
