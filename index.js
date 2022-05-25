@@ -35,6 +35,7 @@ async function run() {
     const reviewCollection = await client.db("Bycycle-Soul-DB").collection("reviews")
     const partsCollection = await client.db("Bycycle-Soul-DB").collection("Parts")
     const userCollection =  await client.db('Bycycle-Soul-DB').collection('users');
+    const orderCollection =  await client.db('Bycycle-Soul-DB').collection('orders');
 
 
     app.get('/reviews', async (req, res) => {
@@ -51,6 +52,8 @@ async function run() {
       const results = await cursor.toArray();
       res.send(results);
     })
+
+    
 
     app.get('/users', verifyJWT, async (req, res) => {
       const users = await userCollection.find().toArray()
@@ -81,6 +84,12 @@ async function run() {
       }
       const result = await userCollection.insertOne({ email: postItem.email, role: 'member' });
       res.send({ accessToken: token })
+    })
+
+    app.post('/orders', async (req, res) => {
+      const postItem = await req.body;
+      const result = await orderCollection.insertOne(postItem)
+      return res.send({ success: true, message: 'Order placed successfully' })
     })
 
   } finally {
