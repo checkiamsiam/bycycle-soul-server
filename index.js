@@ -122,6 +122,10 @@ async function run() {
       const result = await orderCollection.insertOne(postItem)
       return res.send({ success: true, message: 'Order placed successfully' })
     })
+    app.get('/orders' , async (req, res) => {
+      const result = await orderCollection.find().toArray()
+      res.send(result)
+    })
 
   } finally {
 
