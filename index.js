@@ -46,9 +46,15 @@ async function run() {
       res.send(result);
     })
 
-    app.post('/reviews', async (req, res) => {
+    app.post('/reviews', verifyJWT , async (req, res) => {
      const postItem = await req.body;
      const result = await reviewCollection.insertOne(postItem);
+      res.send(result)
+    })
+
+    app.post('/parts', verifyJWT , async (req, res) => {
+     const postItem = await req.body;
+     const result = await partsCollection.insertOne(postItem);
       res.send(result)
     })
 
@@ -56,6 +62,13 @@ async function run() {
       const query = await req.query;
       const cursor = await partsCollection.find(query)
       const results = await cursor.toArray();
+      res.send(results);
+    })
+    app.get('/partsLatest', async (req, res) => {
+      const query = await req.query;
+      const cursor = await partsCollection.find(query)
+      const partsData = await cursor.toArray();
+      const results = partsData.reverse();
       res.send(results);
     })
 
@@ -80,6 +93,18 @@ async function run() {
       res.send(result)
     })
     
+    app.put('/users', verifyJWT, async (req, res) => {
+      const email = await req.query.email
+      const body = await req.body
+      const filter = { email };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: body
+      };
+      const result = await userCollection.updateOne(filter, updateDoc, options);
+      res.send(result)
+    })
+    
     app.post('/users', async (req, res) => {
       const postItem = await req.body;
       const query = { email: postItem.email };
@@ -92,7 +117,7 @@ async function run() {
       res.send({ accessToken: token })
     })
 
-    app.post('/orders', async (req, res) => {
+    app.post('/orders', verifyJWT , async (req, res) => {
       const postItem = await req.body;
       const result = await orderCollection.insertOne(postItem)
       return res.send({ success: true, message: 'Order placed successfully' })
