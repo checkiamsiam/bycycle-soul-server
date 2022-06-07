@@ -74,7 +74,7 @@ async function run() {
 
     
 
-    app.get('/users', verifyJWT, async (req, res) => {
+    app.get('/users', async (req, res) => {
       const users = await userCollection.find().toArray()
       res.send(users)
     })
@@ -105,7 +105,7 @@ async function run() {
       res.send(result)
     })
     
-    //jwt
+    
     app.post('/users', async (req, res) => {
       const postItem = await req.body;
       const query = { email: postItem.email };
