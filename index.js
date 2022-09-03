@@ -15,6 +15,16 @@ app.get("/", (req, res) => {
   res.send("Server is Running");
 });
 
+app.all("*", (req, res) => {
+  res.send("route doesn't exist");
+});
+
+app.use((err, req, res, next) => {
+  if (err) {
+    res.send("there is an error");
+  }
+});
+
 app.listen(port, () => {
   console.log(`server is running at ${port} port`);
 });
